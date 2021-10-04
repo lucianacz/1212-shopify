@@ -1,0 +1,56 @@
+<div class="{{variant.option1 |  handleize }} {{variant.option2 | handleize  }}">
+
+  {% assign collection_handles = product.collections | map: 'handle' %}
+  {% if product.featured_image.alt contains 'youtube' or image.alt contains 'vimeo' %}
+    {% assign alt_text = product.title %}
+  {% else %}
+    {% assign alt_text = product.featured_image.alt %}
+  {% endif %}
+
+  {% if settings.align_height %}
+    {% assign collection_height = settings.collection_height | plus: 0 %}
+    {% assign product_aspect_ratio = product.featured_image.aspect_ratio | plus: 0 %}
+    {% assign product_set_width = product_aspect_ratio | times: collection_height %}
+
+    {% if product.featured_image.width >= product.featured_image.height %}
+      {% assign align_height_value = 'width: 100%; height: auto;' %}
+    {% else %}
+      {% assign align_height_value = 'width: 100%;' %}
+    {% endif %}
+
+  {% endif %}
+
+  <div class="product-wrap">
+    <div class="relative product_image {{first_size_val}}">
+      <a href="{{ product.url | within: collection | append: '?variant=' | append: variant.id }}" itemprop="url" data-url="{{variant.url}}">
+        <div class="image__container" style="{% if settings.align_height %} max-width: {{ product_set_width }}px; {% else %} max-width: {{- product.featured_image.width -}}px; {% endif %}">
+          <img  src="{{ variant.image | product_img_url: '100x' }}"
+                alt="{{ alt_text | escape }}"
+                class="lazyload {{ settings.image_loading_style }}"
+                style="{{ align_height_value }} max-width: {{- product.featured_image.width -}}px;"
+                data-sizes="auto"
+                data-src="{{ variant.image | product_img_url: '900x' }}"
+                data-srcset=" {{ variant.image | product_img_url: '300x' }} 300w,
+                              {{ variant.image | product_img_url: '400x' }} 400w,
+                              {{ variant.image | product_img_url: '500x' }} 500w,
+                              {{ variant.image | product_img_url: '600x' }} 600w,
+                              {{ variant.image | product_img_url: '700x' }} 700w,
+                              {{ variant.image | product_img_url: '800x' }} 800w,
+                              {{ variant.image | product_img_url: '900x' }} 900w"
+              />
+            </div>
+       {% comment %} {% include 'variant-secondary-image' %} {% endcomment %}
+          
+        </a>
+      {% assign collection_handles = product.collections | map: 'handle' %}
+      <div class="thumbnail-overlay">
+        <a href="{{ product.url | within: collection | append: '?variant=' | append: variant.id  }}" itemprop="url" class="hidden-product-link">{{ product.title }}</a>
+      </div>
+      
+    </div>
+    <a class="product-info__caption {% if settings.thumbnail_hover_enabled %}hidden{% endif %}" href="{{ product.url | within: collection }}">
+        {% include "product-info" %}
+        <div class="carousel-buy-now">Buy Now</div>
+    </a>
+  </div>
+</div>

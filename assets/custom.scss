@@ -1,0 +1,21 @@
+#gift-note{
+  	    border: 1px solid #aaa;
+  }
+.swatch .swatch-element.soldout label{
+	    color: #c1c1c1;
+}
+.swatch.size .swatch-element.soldout .tooltip{
+	    opacity: 0 !important;
+  		visibility: hidden !important;
+}
+.tooltip.hidden{
+  opacity: 0 !important;
+  visibility: hidden !important;
+  display: none !important;
+}
+.tooltip.show{
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+}
+

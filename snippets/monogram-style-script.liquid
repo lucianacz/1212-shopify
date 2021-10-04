@@ -1,0 +1,63 @@
+<script>window.jQuery || 
+  document.write("<script src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'>\x3C/script>")
+</script>
+
+<script>
+  $(document).ready(function(){
+    $(".monogram-fields").hide();
+    $(".monogram").click(function(){
+      
+      if($(this).hasClass('active')){
+        $(this).removeClass('active');
+      }else{
+        $(this).addClass('active');
+        
+      }
+//       console.log("hello");
+      $(this).parent().children('.monogram-fields').toggle();
+//       $(".monogram-fields").toggle();
+    });
+
+    $('.monogram-text').keyup(function(){
+      console.log($(this));
+      if($(this).val() == ''){
+        $(this).parent().parent().children('p').children('.monogram-color').removeAttr("name");
+        
+        $(this).parent().parent().children('.mono-charge-id').val("");
+        $(this).parent().parent().children(".mono-charge-id").removeAttr("name");
+        $(this).parent().parent().children('.mono-charge-title').removeAttr("name");
+      }
+      else{
+        $(this).parent().parent().children(".mono-charge-title").attr("name", "properties[Product:]");
+        $(this).parent().parent().children(".mono-charge-id").attr("value", "41297346638");
+        $(this).parent().parent().children(".mono-charge-id").attr("name", "id[]");
+        $(this).parent().parent().children('p').children('.monogram-color').attr("name", "properties[Monogram color]");
+      }
+    });       
+    
+  });
+</script>
+<style>
+  #monogram {
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 10px;
+
+  }
+  #monogram > img {
+    height: 14px;
+    vertical-align: middle;
+  }
+  #monogram.active > img {
+    transform: rotate(180deg);
+  }
+  #monogram-text{
+  	    border: 1px solid #aaa;
+  }
+</style>
+
+
+   
+<style>
+  .so-volume-offers { display:none; }
+</style>

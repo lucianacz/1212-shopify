@@ -1,0 +1,58 @@
+{% assign product_found = false %}
+{% assign skip = false %}
+{% assign collection_group = products | map: 'id' %}
+{% assign collection_group_thumb = collection_group | append : 'thumb' %}
+{% assign collection_group_mobile = collection_group | append : 'mobile' %}
+{% if template.suffix contains 'details' %}
+{% assign products_per_row = 3 %}
+{% endif %}
+
+{% assign size_value = collection.title | split: '|' %}
+{% assign size_value1 = size_value[1] | strip %}
+
+{% capture new_row %}
+    <br class="clear product_clear" />
+{% endcapture %}
+
+<div itemtype="http://schema.org/ItemList" class="product-list collection-matrix clearfix test">
+  {% for product in products limit: 50 %}
+
+  {% for product_option in product.options_with_values %}
+
+  {% if product_option.name contains "Size" or product_option.name contains "size" %}
+  {% for value in product_option.values %}
+
+  {% if value == size_value1 %}
+  {% assign first_size_val = value %}
+  {% endif %}
+  {% endfor %}
+  {% endif %}
+
+  {% endfor %}
+  
+    {% assign product_found = false %}
+    {% assign skip = false %}
+  
+  		{% for variant in product.variants %}
+
+          	{% if variant.option2 == first_size_val %}
+  
+              {% if product.id == skip_product.id or skip == true %}
+
+                {% assign product_found = true %}
+              {% else %}
+
+  				{% if variant.available %}
+
+			<!-- {{variant.available}} - {{ variant.image }} - {{ variant.image.alt }}-->
+                  {% include 'product-thumbnail-size' with product-loop-size %}
+				{% endif %}
+			{% endif %}
+  			{% endif %}
+  
+  
+  		{% endfor %}
+    
+  {% endfor %}
+  
+</div>

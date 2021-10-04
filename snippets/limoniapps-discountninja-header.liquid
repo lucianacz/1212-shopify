@@ -1,0 +1,16 @@
+{% comment %}V3.0.2 - October 2019
+This liquid snippet is used by Discount Ninja, an app from Limoni Apps
+Do not modify or remove this snippet, this snippet can be overwritten when the app is upgraded
+{% endcomment %}
+
+{% comment %}
+Add css to the head
+{% endcomment %}
+{{ 'limoniapps-discountninja.css' | asset_url | stylesheet_tag }}
+{{ 'limoniapps-discountninja-custom.css' | asset_url | stylesheet_tag }}
+
+{% comment %}
+Add js to the head
+{% endcomment %}
+<script src="{{ 'limoniapps-discountninja-support.js' | asset_url }}"></script>
+<script src="{{ 'limoniapps-discountninja.js' | asset_url }}"></script>

@@ -1,0 +1,44 @@
+<!---monogram---->
+    
+    {% if product.tags contains "monogram"%}
+<div class="mono-parent">
+    <div id="monogram" class="monogram">
+      {% if settings.add_monogram_line_text %}
+      {{settings.add_monogram_line_text}}
+      {% else %}Add a Monogram text 
+      {% endif %}
+      {{'icon-arrow-down-b-128.png' | asset_url | img_tag}}
+    </div>
+    
+    <div id="monogram-fields" class="monogram-fields">
+      {% if settings.monogram_sub_text %}      
+      <p class="monogram_subline">{{settings.monogram_sub_text}}</p>
+      {% endif %}
+      <p class="line-item-property__field">
+        <label for="monogram">Monogram text</label>
+        <input id="monogram-text" class="monogram-text" type="text" maxlength="{% if settings.monogram_text_field_length%}{{settings.monogram_text_field_length}}{%else%}3{%endif%}" name="properties[Monogram]">
+      </p>
+      <p class="line-item-property__field">
+        <label for="monogram-color">Monogram color</label>
+        {% if settings.monogram_color_options %}
+        {%assign color_options = settings.monogram_color_options | split: ','%}
+        <select id="monogram-color" class="monogram-color" type="color" name="">
+          {% for color_option in color_options %}
+          <option value="{{color_option | handleize}}">{{color_option}}</option>
+          {% endfor %}
+        </select>
+        {%else%}
+        <select id="monogram-color" class="monogram-color" type="color" name="">
+          <option value="red">Red</option>
+          <option value="green">Green</option>
+          <option value="black">Black</option>
+          <option value="white">White</option>
+        </select>
+        {%endif%}
+      </p>
+
+      <input type="hidden" name="" id="mono-charge-title" class="mono-charge-title" value="{{product.title}}"/>
+      <input type="hidden" name="" id="mono-charge-id" class="mono-charge-id" value="" /> 
+    </div>
+</div>
+    {% endif %}

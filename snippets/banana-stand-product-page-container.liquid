@@ -1,0 +1,9 @@
+<!-- BEGIN BananaStand.IO Product View Container -->
+      <div class="banana-container banana-view-container"
+         data-product_id="{{ product.id }}"
+         data-container_type="view"
+         {% if campaign_id %}data-campaign_id="{{ campaign_id }}"{% endif %}
+         {% if exclude_campaign_id %}data-exclude_campaign_type="{{ exclude_campaign_type }}"{% endif %}
+         {% if campaign_type %}data-campaign_type="{{ campaign_type }}"{% endif %}
+         {% if exclude_campaign_type %}data-exclude_campaign_type="{{ exclude_campaign_type }}"{% endif %}></div>
+      <!-- END -->

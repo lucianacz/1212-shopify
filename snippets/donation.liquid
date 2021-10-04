@@ -1,0 +1,577 @@
+{{ 'jquery.min.js' | asset_url | script_tag }}
+
+{% comment %}
+  See all documentation for this here: https://github.com/carolineschnapp/donation
+  
+  Author: Caroline Schnapp
+
+  Enter below the handle of your link list that contains a first link pointing to your donation product.
+  Then, you're done.
+{% endcomment %}
+
+{% assign linklist_handle = 'donation' %}
+
+{% if linklists[linklist_handle].empty? %}
+  <p class="errors">You don't have a link list with handle <tt>{{ linklist_handle }}</tt>.</p>
+{% elsif linklists[linklist_handle].links.first.type != 'product_link' %}
+  <p class="errors">Your <a href="/admin/link_lists/">{{ linklists[linklist_handle].title }}</a> link list does not contain a link that points to a product.</p>
+{% else %}
+
+{% assign product = linklists[linklist_handle].links.first.object %}
+
+{% comment %}
+  If the product has one variant, we are showing a text box.
+  If the product has more than 1 variant, we show radio buttons for each fixed amount,
+  followed by a text box if we have a variant with price $1.
+{% endcomment %}
+
+<div class="donation-wrap">
+  <h3>
+    <span class="checkbox-baby" style="display: none">
+    <input type="checkbox" name="checkbox" value="">
+    </span>Include a Donation to Baby2Baby</h3>
+		
+  <div class="donation-variants">
+    <img src="{{ section.settings.donation_logo | img_url: 'master' }}" alt="baby2baby logo">
+	<p>{{ section.settings.donation_text }}<br />
+      <a href="{{ section.settings.donation_popup | img_url: 'master' }}" data-fancybox="images">Learn More</a></p>     
+  </div>
+</div>
+
+<div class="clearfix donation-variants">
+  
+  {% comment %}
+    Determining below if we will need an input box for user to type in an amount.
+    Note: variant.price is in cents!
+  {% endcomment %}
+  
+  {% assign has_variable_donation = false %}
+  {% assign variable_donation_index_in_product = 0 %}
+  
+  {% for variant in product.variants %}
+    {% if variant.price == 100 %}
+      {% assign has_variable_donation = true %}
+      {% assign variable_donation_index_in_product = forloop.index0 %}
+    {% endif %}
+  {% endfor %}
+  
+  {% comment %}
+    Examining the content of the cart, looking for a donation.
+  {% endcomment %}
+
+  {% assign donation_amount = 0 %}
+  {% assign donation_index = 0 %}
+  {% assign cart_count = 0 %}
+  {% for item in cart.items %}
+
+    {% if has_variable_donation and item.id == product.variants[variable_donation_index_in_product].id %}
+      {% assign donation_amount = item.quantity %}
+      {% assign donation_index = forloop.index0 %}
+      {% assign cart_count = cart_count | plus: 1 %}
+    {% else %}
+      {% assign cart_count = cart_count | plus: item.quantity %}
+    {% endif %}
+  {% endfor %}
+
+  {% if product.variants.size > 1 or has_variable_donation == false  %}
+
+    {% assign fixed_amount_in_cart = false %}
+
+    {% for variant in product.variants %}
+      {% unless has_variable_donation and forloop.index0 == variable_donation_index_in_product %}
+      {% assign is_active = false %}
+      {% for item in cart.items %}
+
+        {% if item.id == variant.id and is_active == false %}
+          {% assign fixed_amount_in_cart = true %}
+          {% assign is_active = true %}
+        {% endif %}
+      {% endfor %}
+      <input class="hidden{% if is_active %} active{% endif %}" type="radio" name="donation-fixed-amount" value="{{ variant.id }}" id="donation-{{ variant.id }}"{% if is_active %} checked{% endif %} />
+      <label class="donation" for="donation-{{ variant.id }}">{{ variant.price | money }}</label>
+      {% endunless %}
+    {% endfor %}
+
+    {% if has_variable_donation %}
+    <span class="donation-variable-amount">
+      <input class="hidden{% unless fixed_amount_in_cart or donation_amount == 0 %} active{% endunless %}" type="radio" name="donation-fixed-amount" id="donation-variable" value="" {% unless fixed_amount_in_cart or donation_amount == 0 %}checked{% endunless %} />
+      <label class="donation-variable-amount__label donation" for="donation-variable">Other</label>
+      <input class="donation-variable-amount__input{% if fixed_amount_in_cart %} donation-variable-amount__input--disabled{% endif %}" placeholder="{{ 0 | money }}" {% if fixed_amount_in_cart %}disabled{% endif %}{% unless donation_amount == 0 %} value="{{ donation_amount | times: 100 | money_without_trailing_zeros }}"{% endunless %} type="text" data-variant-id="{{ product.variants.first.id }}" />
+    </span>
+    {% endif %}
+
+  {% else %}
+
+    <input class="donation-variable-amount__input"{% unless donation_amount == 0 %} value="{{ donation_amount | times: 100 | money_without_trailing_zeros }}"{% endunless %} type="text" data-variant-id="{{ product.variants.first.id }}" />
+
+  {% endif %}
+  
+</div>
+
+<script>
+jQuery(function($) {
+  var fixedAmountButtons = $('[name="donation-fixed-amount"]'),
+    donationVariableAmount = $('.donation-variable-amount__input'),
+    cartCountSelector = 'body .cart, #cart-count a:first, #gocart p a, #cart .checkout em, .item-count',
+    cartFormButtons = $('form[action="/cart"]').find('[name="update"], [name="checkout"], [name="goto_pp"], [name="goto_gc"]'),
+    data = { updates: {} },
+    qty = 0,
+    variantId,
+    isFixedAmount = true,
+    updateDonation = function() {
+      isFixedAmount = false;
+      fixedAmountButtons.each(function() {
+        variantId = $(this).val();
+        if (variantId) {
+          if ($(this).is(':checked')) {
+            data['updates'][variantId] = 1;
+            isFixedAmount = true;
+          }
+          else {
+            data['updates'][variantId] = 0;
+          }
+        }
+      });    
+      if (isFixedAmount) {
+        donationVariableAmount.val('');
+        data['updates'][{{ product.variants[variable_donation_index_in_product].id }}] = 0;
+      }
+      else {
+        qty = parseInt(donationVariableAmount.val().replace(/[^0-9.,]/,''), 10) || 0;
+        data['updates'][{{ product.variants[variable_donation_index_in_product].id }}] = qty;
+      }
+      $.ajax({
+        type: 'POST',
+        url: '/cart/update.js', 
+        data: $('form[action="/cart"]').serialize(),
+        dataType: 'json',
+        success: function() {
+          $.ajax({
+            type: 'POST',
+            url: '/cart/update.js',
+            data: data,
+            dataType: 'json',
+            success: function() {
+              window.location.href = '/cart';
+            }
+          });
+        }      
+      });
+    };
+  
+  // Hide quantity box in cart form for variable donation amount.
+  // Update cart item count too, so that a variable amount counts as 1 item.
+  {% if donation_amount > 0 %}
+  jQuery('form[action="/cart"] [name^="updates"]:eq({{ donation_index }})').css('visibility', 'hidden');
+  if (cartCountSelector && jQuery(cartCountSelector).size()) {
+    var value = $(cartCountSelector).first().html();
+    $(cartCountSelector).first().html(value.replace(/[0-9]+/, {{ cart_count | json }}));
+  }                                    
+  {% endif %}
+                                   
+  // Automatically add the donation when a button is clicked or variable amount changes.
+  fixedAmountButtons.bind('click', function() {
+    if ($(this).is('.active')) {
+      $(this).prop('checked', false);
+      $(this).removeClass('active');
+      if ($(this).val()) {
+        updateDonation();
+      }
+      else {
+        donationVariableAmount.val('');
+        donationVariableAmount.prop('disabled', true).addClass('donation-variable-amount__input--disabled');
+        updateDonation();
+      }
+    }
+    else {
+      fixedAmountButtons.removeClass('active');
+      $(this).addClass('active');
+      if ($(this).val()) {
+        updateDonation();
+      }
+      else {
+        donationVariableAmount.prop('disabled', false).removeClass('donation-variable-amount__input--disabled').get(0).focus();
+      }
+    }
+  });
+    
+  // If Enter key is pressed while input box has focus, update donation.
+  donationVariableAmount.bind('keypress', function(e) {
+    if (e.which === 13) {
+      updateDonation();
+      return false;
+    }
+  });
+  
+  // If Donation amount has changed, update donation.
+  donationVariableAmount.bind('change, blur', function() {
+    cartFormButtons.prop('disabled', true);
+    updateDonation();
+  });
+  
+});
+</script>
+
+<script>
+
+  $(document).ready(function() {
+  
+    if ($(window).width() < 499) {
+    $(function(){
+    var test = localStorage.input === 'true'? true: false;
+    $('.checkbox-baby input[type="checkbox"]').prop('checked', test || false);
+      if(test == true){ 
+        $(".donation-variants").show(); 
+      }
+      else {
+        $(".donation-variants").hide(); 
+      }
+});
+
+    $('.checkbox-baby input[type="checkbox"]').click(function() {
+      if ($(this).is(":checked")){
+      $(".donation-variants").show();
+        localStorage.input = $(this).is(':checked');
+      }
+      else {
+      $(".donation-variants").hide();
+        localStorage.input = false;
+      }
+  });
+    
+    }
+    
+});
+  
+</script>
+
+{% comment %}
+  Special font here.
+{% endcomment %}
+
+{% comment %}
+  Variables for styles.
+{% endcomment %}
+
+{% assign donation_color_active = '#000' %}
+{% assign donation_color_inactive = '#dcdcdc' %}
+{% assign donation_text_color = '#000' %}
+
+{% comment %}
+  Our styles.
+{% endcomment %}
+
+<style>
+
+  .donation-wrap img {
+    width: 225px;
+}
+  
+.hidden {
+  display: none !important;
+}
+
+.donation {
+  box-sizing: border-box;
+  position: relative;
+  float: left;
+  margin: 0 10px 10px 0;
+  border: 1px solid #000;
+  background-color: transparent;
+  transition: background-color .5s;
+  color: {{ donation_text_color }};  
+  cursor: pointer;
+}
+  
+.donation-added .product-quantity-box .quantity {
+    visibility: visible !important;
+}
+
+.donation, .donation-variable-amount__input {
+  box-sizing: border-box;
+  display: inline-block;
+  padding: 8px 12px !important;
+  letter-spacing: 1px;
+  font-weight: 400;
+  font-size: 15px !important;
+  line-height: 24px !important;
+}
+
+.donation-variable-amount {
+  box-sizing: border-box;
+  float: left;
+  margin: 0 10px 10px 0;
+  padding: 0;
+}
+
+.donation-variable-amount .donation-variable-amount__input {
+  float: left;
+  margin-left: -1px;
+  border-left: none;
+}
+
+.donation-variable-amount__label { 
+  box-sizing: border-box; 
+  margin: 0;
+}
+
+.donation-variable-amount__input {
+  box-sizing: border-box;
+  width: 120px !important;
+  height: 40px !important;
+  margin: 0;
+  border: 1px solid {{ donation_color_inactive }};
+  border-radius: 1px !important;
+}
+
+input:checked ~ .donation-variable-amount__input, 
+input.active ~ .donation-variable-amount__input {
+  border: 1px solid {{ donation_color_active }};
+}
+
+.donation-variable-amount__input--disabled {  
+  opacity: 0.5;
+}
+
+input:checked + .donation,
+input.active + .donation,
+.donation:hover {
+  background-color: {{ donation_color_active }};
+  border: 1px solid {{ donation_color_active }};
+  color: #fff;
+}
+
+input:checked + .donation:after,
+input.active + .donation:after {
+  content: "\00D7";
+  position: absolute;
+  font-size: 12px;
+  top: -2px;
+  right: 4px;
+}
+
+::-webkit-input-placeholder {
+   color: #bbb;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+   color: #bbb; 
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+   color: #bbb;
+}
+
+:-ms-input-placeholder {
+   color: #bbb; 
+}
+
+  
+  body.lb-disable-scrolling {
+  overflow: hidden;
+}
+
+.lightboxOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  background-color: black;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
+  opacity: 0.8;
+  display: none;
+}
+
+.lightbox {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  z-index: 10000;
+  text-align: center;
+  line-height: 0;
+  font-weight: normal;
+}
+
+.lightbox .lb-image {
+  display: block;
+  height: auto;
+  max-width: inherit;
+  max-height: none;
+  border-radius: 3px;
+
+  /* Image border */
+  border: 4px solid white;
+}
+
+.lightbox a img {
+  border: none;
+}
+
+.lb-outerContainer {
+  position: relative;
+  *zoom: 1;
+  width: 250px;
+  height: 250px;
+  margin: 0 auto;
+  border-radius: 4px;
+
+  /* Background color behind image.
+     This is visible during transitions. */
+  background-color: white;
+}
+
+.lb-outerContainer:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.lb-loader {
+  position: absolute;
+  top: 43%;
+  left: 0;
+  height: 25%;
+  width: 100%;
+  text-align: center;
+  line-height: 0;
+}
+
+.lb-cancel {
+  display: block;
+  width: 32px;
+  height: 32px;
+  margin: 0 auto;
+  background: url({{ 'loading.gif' | asset_url }}) no-repeat;
+}
+
+.lb-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+}
+
+.lb-container > .nav {
+  left: 0;
+}
+
+.lb-nav a {
+  outline: none;
+  background-image: url('data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==');
+}
+
+.lb-prev, .lb-next {
+  height: 100%;
+  cursor: pointer;
+  display: block;
+}
+
+.lb-nav a.lb-prev {
+  width: 34%;
+  left: 0;
+  float: left;
+  background: url({{ 'prev.png' | asset_url }}) left 48% no-repeat;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+  -webkit-transition: opacity 0.6s;
+  -moz-transition: opacity 0.6s;
+  -o-transition: opacity 0.6s;
+  transition: opacity 0.6s;
+}
+
+.lb-nav a.lb-prev:hover {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+}
+
+.lb-nav a.lb-next {
+  width: 64%;
+  right: 0;
+  float: right;
+  background: url({{ 'next.png' | asset_url }}) right 48% no-repeat;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+  -webkit-transition: opacity 0.6s;
+  -moz-transition: opacity 0.6s;
+  -o-transition: opacity 0.6s;
+  transition: opacity 0.6s;
+}
+
+.lb-nav a.lb-next:hover {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+}
+
+.lb-dataContainer {
+  margin: 0 auto;
+  padding-top: 5px;
+  *zoom: 1;
+  width: 100%;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.lb-dataContainer:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.lb-data {
+  padding: 0 4px;
+  color: #ccc;
+}
+
+.lb-data .lb-details {
+  width: 85%;
+  float: left;
+  text-align: left;
+  line-height: 1.1em;
+}
+
+.lb-data .lb-caption {
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 1em;
+}
+
+.lb-data .lb-caption a {
+  color: #4ae;
+}
+
+.lb-data .lb-number {
+  display: block;
+  clear: left;
+  padding-bottom: 1em;
+  font-size: 12px;
+  color: #999999;
+}
+
+.lb-data .lb-close {
+  display: block;
+  float: right;
+  width: 30px;
+  height: 30px;
+  background: url({{ 'close.png' | asset_url }}) top right no-repeat;
+  text-align: right;
+  outline: none;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70);
+  opacity: 0.7;
+  -webkit-transition: opacity 0.2s;
+  -moz-transition: opacity 0.2s;
+  -o-transition: opacity 0.2s;
+  transition: opacity 0.2s;
+}
+
+.lb-data .lb-close:hover {
+  cursor: pointer;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+}
+
+  
+</style>
+
+{% endif %}

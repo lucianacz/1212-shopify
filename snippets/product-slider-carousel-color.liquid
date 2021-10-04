@@ -1,0 +1,97 @@
+{% comment %}Check for related products and increase limit by one (to offset the currently selected product that is removed from the product loop){% endcomment %}
+{% if related_products == true %}
+  {% assign limit = limit | plus: 0 %}
+  {% assign loop_limit = limit | plus: 1 %}
+{% else %}
+  {% assign limit = limit | plus: 0 %}
+  {% assign loop_limit = limit | plus: 0 %}
+{% endif %}
+
+{% if per_slide != blank %}
+  {% assign visible_products = per_slide %}
+{% else %}
+  {% if section.settings.products_per != blank %}
+    {% assign visible_products = section.settings.products_per | plus: 0 %}
+  {% else %}
+    {% assign visible_products = block.settings.products_per | plus: 0 %}
+  {% endif %}
+{% endif %}
+
+
+{% if template contains 'product' %}
+  {% if limit <= visible_products %}
+    {% assign products_length = limit %}
+  {% else %}
+    {% assign products_length = products.length | minus: 1 %}
+  {% endif %}
+{% elsif featured_collection %}
+  {% assign products_length = collections[featured_collection].products.length %}
+{% elsif section.settings.show_product_recommendations %}
+  {% assign products_length = limit %}
+{% else %}
+  {% assign products_length = products.length %}
+{% endif %}
+
+{% assign color_value = block.settings.color_selector | split: '+' %}
+{% assign color_value1 = color_value[1] | strip %}
+{% assign num_colors = color_value.size | minus: 1 %}
+
+<div class="slider-gallery products-slider products-length-{{ products_length }} transparentBackground--{{settings.slideshow_button_style}}"
+      data-products-per-slide="{{ visible_products }}"
+      data-products-limit="{{ limit }}"
+      data-products-available="{{ products_length }}"
+     data-carousel-slider="1">
+  {% for product in products limit: 50 %}
+
+  {% for product_option in product.options_with_values %}
+    
+
+  {% if product_option.name contains "Color" or product_option.name contains "color" %}
+
+	{% assign i = 0 %}
+  	{% for value in product_option.values %}
+		{% for i in (0..num_colors) %}
+  		{% assign color_selected = color_value[i] | strip %}
+ 
+  		{% if value == color_selected %}
+  		{% assign first_color_val = value %}
+  
+  		<!--h2>{{ first_color_val }}</h2-->
+  		{% for variant in product.variants %}
+
+          	{% if variant.option1 == first_color_val %}
+  		
+  
+              {% if product.id == skip_product.id or skip == true %}
+                {% assign product_found = true %}
+              {% else %}
+
+  				{% if variant.available %}
+  <div class="gallery-cell
+                  thumbnail
+                  visible-{{ visible_products }}
+                  quick-shop-style--{{ settings.quick_shop_style }}
+                  product-{{ product.id }}">
+					<!-- {{variant.available}} -- {{ variant.option2 }}- {{ variant.image }} - {{ variant.image.alt }}-->
+                  	{% include 'product-thumbnail-carousel-color' with product-loop-size %}
+          </div>
+					{% break %}
+  				{% endif %}
+			  {% endif %}
+
+  			{% endif %}
+  
+  		{% endfor %} <!---  for variants loop ends here  ----->
+  		{% endif %}
+   		{% endfor %}
+  	{% endfor %}
+
+  {% endif %}
+  
+  {% endfor %} 
+  {% assign product_found = false %}
+    {% assign skip = false %}
+  
+  {% endfor %}
+  
+</div>

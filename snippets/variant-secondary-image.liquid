@@ -1,0 +1,36 @@
+{% assign image_tag = variant.image.alt | remove: product.title |  remove: ' • 12|12' | remove: ' - ' | append: ' Hover' %}
+
+{% assign variant_image_found = 'false' %}
+{% for image in product.images %}
+{% if image.alt contains image_tag %}
+{% assign variant_image_found = image.src %}
+{% endif %}
+{% endfor %}
+
+<span style="display: none">{{ image_tag }} - {% if variant_image_found == 'false' %}{% else %}{{ variant_image_found }}{% endif %}</span>
+
+{% if variant_image_found != 'false' %}
+ <img style="width: 100%" src="{{ variant_image_found | product_img_url: '400x' }}"
+                alt="{{ alt_text | escape }}"
+                class="secondary lazyload {{ settings.image_loading_style }}"
+                style="{{ align_height_value }} max-width: {{- product.featured_image.width -}}px;"
+                data-sizes="auto"
+                data-src="{{ variant_image_found | product_img_url: '900x' }}"
+                data-srcset=" {{ variant_image_found | product_img_url: '300x' }} 300w,
+                              {{ variant_image_found | product_img_url: '400x' }} 400w,
+                              {{ variant_image_found | product_img_url: '500x' }} 500w,
+                              {{ variant_image_found | product_img_url: '600x' }} 600w,
+                              {{ variant_image_found | product_img_url: '700x' }} 700w,
+                              {{ variant_image_found | product_img_url: '800x' }} 800w,
+                              {{ variant_image_found | product_img_url: '900x' }} 900w"
+              />
+
+{% else %}
+
+            <div class="image__container" style="max-width: {% if variant.image != blank %}{{- variant.image.width -}}px{% else %}{{- product.featured_image.width -}}px{% endif %}; ">
+              <img src="{% if variant.image != blank %}{{ variant.image | product_img_url: '900x' }}{% else %}{{ variant.image | product_img_url: '900x' }}{% endif %}"
+              class="secondary lazyload"
+              alt="{{ alt_text | escape }}"
+              />
+            </div>
+          {% endif %}

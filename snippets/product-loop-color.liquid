@@ -1,0 +1,76 @@
+{% assign product_found = false %}
+{% assign skip = false %}
+{% assign collection_group = products | map: 'id' %}
+{% assign collection_group_thumb = collection_group | append : 'thumb' %}
+{% assign collection_group_mobile = collection_group | append : 'mobile' %}
+{% if template.suffix contains 'details' %}
+{% assign products_per_row = 3 %}
+{% endif %}
+
+{% assign color_value = collection.metafields.global.colors | split: '+' %}
+{% assign color_value1 = color_value[1] | strip %}
+{% assign num_colors = color_value.size | minus: 1 %}
+
+
+{% capture new_row %}
+    <br class="clear product_clear" />
+{% endcapture %}
+
+<div itemtype="http://schema.org/ItemList" class="product-list collection-matrix clearfix test">
+  {% for product in products limit: 50 %}
+
+  {% for product_option in product.options_with_values %}
+
+  {% if product_option.name contains "Color" or product_option.name contains "color" %}
+
+{% assign i = 0 %}
+  
+  	{% for value in product_option.values %}
+
+		{% for i in (0..num_colors) %}
+  		{% assign color_selected = color_value[i] | strip %}
+  
+  
+  		{% if value == color_selected %}
+  		{% assign first_color_val = value %}
+  
+  		<!--h2>{{ first_color_val }}</h2>
+  		{% for variant in product.variants %}
+
+          	{% if variant.option1 == first_color_val %}
+  
+              {% if product.id == skip_product.id or skip == true %}
+                {% assign product_found = true %}
+              {% else %}
+
+  				{% if variant.available %}
+
+			<!-- {{variant.available}} -- {{ variant.option2 }}- {{ variant.image }} - {{ variant.image.alt }}-->
+                  {% include 'product-thumbnail-size' with product-loop-size %}
+  				{% break %}
+				{% endif %}
+
+			{% endif %}
+  			{% endif %}
+  
+  
+  		{% endfor %} <!---  for variants loop ends here  ----->
+  
+  {% endif %}
+   {% endfor %}
+  	{% endfor %}
+
+  {% endif %}
+
+  
+  {% endfor %}
+  
+    {% assign product_found = false %}
+    {% assign skip = false %}
+ 
+  
+  		
+    
+  {% endfor %}
+  
+</div>

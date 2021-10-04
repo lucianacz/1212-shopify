@@ -1,0 +1,10 @@
+{% if section.settings.show_donation_checkbox %}
+     <p class="cart-attribute__field">
+  			<input type="hidden" name="attributes[Include Donation Bag]" value="No">
+  			<input type="checkbox" name="attributes[Include Donation Bag]" value="Yes"{% if cart.attributes["Include Donation Bag"] == "Yes" %} checked{% endif %}>
+            <label>{{ section.settings.donation_checkbox_label }}</label>
+            <span class="icon-info">
+               <a href="{{ section.settings.donation_checkbox_image | img_url: 'master' }}" data-fancybox="images1">i</a>
+            </span>
+     </p>
+{% endif %}
