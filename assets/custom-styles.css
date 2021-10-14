@@ -1,0 +1,25 @@
+.sale-title{
+  color: red !important;
+}
+
+a.top_link[href="/collections/light-pink-hearts"],
+a.parent-link--true[href="/collections/light-pink-hearts"] {
+  color: #ff7cad;
+}
+
+a.top_link[href="/collections/light-pink-hearts"]::after,
+a.parent-link--true[href="/collections/light-pink-hearts"]:after{
+  background-image: url('https://cdn.shopify.com/s/files/1/0563/2271/9910/files/Ribbon.png?v=1634187935');
+  display: inline-block;
+  width: 20px;
+  position: absolute;
+  height: 40px;
+  content: "";
+  background-repeat: no-repeat;
+  background-size: contain;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 30px;
+}
+
+
