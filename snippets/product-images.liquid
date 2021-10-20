@@ -1,4 +1,6 @@
 {% assign featured_image = product.selected_or_first_available_variant.featured_image | default: product.featured_image %}
+{% assign product_lower = product.title | downcase | append: ' ' %}
+
   {% capture list %}
     {% for image in product.images %}
       {% comment %}Loop through images only once{% endcomment %}
@@ -11,14 +13,14 @@
             gallery-arrows--{{section.settings.gallery_arrows}}
             {% if section.settings.product_thumbs %} {{ section.settings.thumbnail_position }} {% endif %}
             ">
-  <div class="product_gallery js-product-gallery product-{{ product.id }}-gallery
-              {% if product.images.size > 1 %} multi-image {% endif %}
-              {% if product.images.size <= 1 %} single-image {% endif %}
-              transparentBackground--{{settings.slideshow_button_style}}
-              slideshow_animation--{{ section.settings.slideshow_animation }}
-              popup-enabled--{{ section.settings.enable_product_lightbox }}"
-      data-zoom="{{ section.settings.activate_zoom }}"
-      data-autoplay="{{ section.settings.activate_autoplay }}">
+  <div class="product-images product_gallery js-product-gallery product-{{ product.id }}-gallery
+  {% if product.images.size > 1 %} multi-image {% endif %}
+  {% if product.images.size <= 1 %} single-image {% endif %}
+  transparentBackground--{{settings.slideshow_button_style}}
+  slideshow_animation--{{ section.settings.slideshow_animation }}
+  popup-enabled--{{ section.settings.enable_product_lightbox }}"
+  data-zoom="{{ section.settings.activate_zoom }}"
+  data-autoplay="{{ section.settings.activate_autoplay }}">
 
       {% for image_item in image_list %}
         {% assign image = image_item | split: "`~`" %}
@@ -41,7 +43,10 @@
         {% endif %}
 
 
-        <div class="gallery-cell" data-thumb="{{ image_large }}" data-title="{% if image_alt contains 'youtube' or image_alt contains 'vimeo' %}{{ product.title }}{% else %}{{ image_alt | escape }}{% endif %}" data-image-height="{{ original_image_height | strip }}" data-image-width="{{ original_image_width | strip }}">
+        <div class="gallery-cell" 
+        data-gallery-color="{{ image_alt | downcase | remove: product_lower | remove: ' hover' }}"
+        data-thumb="{{ image_large }}"
+        data-title="{% if image_alt contains 'youtube' or image_alt contains 'vimeo' %}{{ product.title }}{% else %}{{ image_alt | escape }}{% endif %}" data-image-height="{{ original_image_height | strip }}" data-image-width="{{ original_image_width | strip }}">
           {% if image_alt contains 'youtube' or image_alt contains 'vimeo' %}
             {% assign src = image_alt | split: 'src="' %}
             {% assign src = src[1] | split: '"' | first %}
@@ -129,9 +134,20 @@
         </div>
       {% endfor %}
   </div>
+
+  <div class="product_gallery variant js-product-gallery product-{{ product.id }}-gallery
+  {% if product.images.size > 1 %} multi-image {% endif %}
+  {% if product.images.size <= 1 %} single-image {% endif %}
+  transparentBackground--{{settings.slideshow_button_style}}
+  slideshow_animation--{{ section.settings.slideshow_animation }}
+  popup-enabled--{{ section.settings.enable_product_lightbox }}"
+  data-zoom="{{ section.settings.activate_zoom }}"
+  data-autoplay="{{ section.settings.activate_autoplay }}">
+  </div>
+
   {% if section.settings.product_thumbs %}
     {% if product.images.size > 1 and image_width != 'full' %}
-      <div class="product_gallery_nav product_gallery_nav--{{ section.settings.thumbnail_position }} product-{{ product.id }}-gallery-nav">
+      <div class="thumbnails-images no-slide product_gallery_nav product_gallery_nav-thumbs product_gallery_nav--{{ section.settings.thumbnail_position }} product-{{ product.id }}-gallery-nav">
 
           {% for image_item in image_list %}
             {% assign image = image_item | split: "`~`" %}
@@ -144,7 +160,8 @@
             {% capture image_800x %}{{ image[6] }}{% endcapture %}
             {% capture image_1200x %}{{ image[7] }}{% endcapture %}
             {% capture image_2000x %}{{ image[8] }}{% endcapture %}
-            <div class="gallery-cell" data-title="{{ image_alt | escape }}">
+            <div class="gallery-cell" data-title="{{ image_alt | escape }}"
+            data-thumbnail-color="{{ image_alt | downcase | remove: product_lower | remove: ' hover'}}">
                 <img  src="{{ image_400x }}"
                       alt="{{ image_alt | escape }}"
                       data-index="{{ forloop.index0 }}"
@@ -154,6 +171,8 @@
             </div>
           {% endfor %}
       </div>
+
+      <div class="product_gallery_nav variant product_gallery_nav-thumbs product_gallery_nav--{{ section.settings.thumbnail_position }} product-{{ product.id }}-gallery-nav"></div>
     {% endif %}
   {% endif %}
 </div>
