@@ -11983,8 +11983,29 @@ div#is-a-gift.donation-checkbox {
 }
 
 
-.product_gallery_nav-thumbs{
+.product_gallery_nav .gallery-cell,
+.product_gallery_nav .is-nav-selected{
+  opacity: 0.5;
+}
+
+
+.product_gallery_nav .gallery-cell.is-selected{
+  opacity: 1;
+}
+
+.product_gallery_nav.no-slide,
+.thumbnails-images.no-slide {
   display: flex;
+  align-items: center;
   justify-content: center;
+  overflow: hidden;
   flex-wrap: wrap;
+}
+
+.thumbnails-images .gallery-cell{
+  max-width: 100px;
+}
+
+.product_gallery_nav.variant .gallery-cell{
+  margin-bottom: 10px;
 }
