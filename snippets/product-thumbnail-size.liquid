@@ -1,3 +1,14 @@
+{% for tag in product.tags %}
+  {% if tag contains 'not-show' %}
+      {% assign not_show__collection = tag | downcase | remove: 'not-show:' | split: '/' | first %}
+      {% assign not_show__color = tag | downcase | remove: 'not-show:' | split: '/' | last %}
+  {% endif %}
+{% endfor %}
+
+{% assign color_thumbnail = variant.metafields.global.print_color | downcase %}
+
+
+{% unless collection.handle == not_show__collection and not_show__color == color_thumbnail %}
 {% if sidebar %}
   <div class="{% if products_per_row == 2 %}six columns {% cycle collection_group_thumb: 'alpha', 'omega' %}{% elsif products_per_row == 3 %}four columns {% cycle collection_group_thumb: 'alpha', '', 'omega' %}{% elsif products_per_row == 4 %}three columns {% cycle collection_group_thumb: 'alpha', '', '', 'omega' %}{% else %}one-fifth-sidebar column {% cycle collection_group_thumb: 'alpha', '', '', '', 'omega' %}{% endif %} thumbnail {% cycle collection_group_mobile: 'even', 'odd' %}">
 {% else %}
@@ -141,3 +152,4 @@
   </div>
 {%comment%}{% include 'collection-swatch' %}{%endcomment%}
 </div>
+{% endunless %}
