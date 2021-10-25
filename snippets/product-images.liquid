@@ -147,7 +147,7 @@
 
   {% if section.settings.product_thumbs %}
     {% if product.images.size > 1 and image_width != 'full' %}
-      <div class="thumbnails-images no-slide product_gallery_nav product_gallery_nav-thumbs product_gallery_nav--{{ section.settings.thumbnail_position }} product-{{ product.id }}-gallery-nav">
+      <div class="thumbnails-images product_gallery_nav product_gallery_nav-thumbs product_gallery_nav--{{ section.settings.thumbnail_position }} product-{{ product.id }}-gallery-nav">
 
           {% for image_item in image_list %}
             {% assign image = image_item | split: "`~`" %}
