@@ -15,6 +15,13 @@ If you plan to remove PageFly, please see the guide in our help center first: ht
 
   gtag('config', 'AW-932763011');
 </script>
+    
+<script>
+  if (window.location.href.indexOf("https://shop1212.com/collections/halloween-1https://shop1212.com/collections/halloween-1") > -1) {
+  window.location.href = 'https://shop1212.com/collections/halloween-1'; 
+  }
+</script>
+
 {% include 'booster-seo' %}
     <meta charset="utf-8">
     <meta http-equiv="cleartype" content="on">
@@ -59,7 +66,7 @@ If you plan to remove PageFly, please see the guide in our help center first: ht
     {{ 'styles.scss.css' | asset_url | stylesheet_tag }}
     
     <!-- Custom Styles -->
-    {{ 'custom-styles.scss.css' | asset_url | stylesheet_tag }}
+    {{ 'custom-styles.css' | asset_url | stylesheet_tag }}
 
     <script>
       window.lazySizesConfig = window.lazySizesConfig || {};
@@ -120,8 +127,11 @@ If you plan to remove PageFly, please see the guide in our help center first: ht
                   {% include 'bss-product-labels-configs' %}
                     
   {% render 'shogun-head' %}
-  <script src="https://cdn-widgetsrepository.yotpo.com/v1/loader/Uu_ERP4Ye5Lvd8aJFikQsw" async></script>
-</head>
+ 
+{% include 'pagefly-header' %}
+   <script src="https://cdn-widgetsrepository.yotpo.com/v1/loader/Uu_ERP4Ye5Lvd8aJFikQsw" async></script>
+    
+</head> 
              
 
   {% if template contains "index" %}

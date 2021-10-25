@@ -1,7 +1,7 @@
 
 development:
   password: shptka_d17d4722b35deec6d2d76c2c819eeebd
-  theme_id: 120564154430
+  theme_id: 120597348414
   store: 1212getgive.myshopify.com
   timeout: 60s
   ignore_files:
