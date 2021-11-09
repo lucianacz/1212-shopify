@@ -18,8 +18,9 @@
     {% elsif products_per_row == 6 %}
       one-sixth column {% cycle collection_group_thumb: 'alpha', '', '', '', '', 'omega' %}
     {% else %}
-      one-seventh column {% cycle collection_group_thumb: 'alpha', '', '', '', '', '', 'omega' %}
-    {% endif %} thumbnail {% cycle collection_group_mobile: 'even', 'odd' %}">
+    gallery-cell
+    thumbnail
+    visible-4    {% endif %} thumbnail {% cycle collection_group_mobile: 'even', 'odd' %}">
 {% endif %}
   
 

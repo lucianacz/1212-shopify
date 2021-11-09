@@ -1,0 +1,67 @@
+{% comment %}Check for related products and increase limit by one (to offset the currently selected product that is removed from the product loop){% endcomment %}
+{% if related_products == true %}
+  {% assign limit = limit | plus: 0 %}
+  {% assign loop_limit = limit | plus: 1 %}
+{% else %}
+  {% assign limit = limit | plus: 0 %}
+  {% assign loop_limit = limit | plus: 0 %}
+{% endif %}
+
+{% if per_slide != blank %}
+  {% assign visible_products = per_slide %}
+{% else %}
+  {% if section.settings.products_per != blank %}
+    {% assign visible_products = section.settings.products_per | plus: 0 %}
+  {% else %}
+    {% assign visible_products = block.settings.products_per | plus: 0 %}
+  {% endif %}
+{% endif %}
+
+
+{% assign color_value = collections[featured_collection].metafields.global.colors | split: '+' %}
+{% assign color_value1 = color_value[1] | strip %}
+{% assign num_colors = color_value.size | minus: 1 %}
+
+{% if template contains 'product' %}
+  {% if limit <= visible_products %}
+    {% assign products_length = limit %}
+  {% else %}
+    {% assign products_length = products.length | minus: 1 %}
+  {% endif %}
+{% elsif featured_collection %}
+  {% assign products_length = collections[featured_collection].products.length %}
+{% elsif section.settings.show_product_recommendations %}
+  {% assign products_length = limit %}
+{% else %}
+  {% assign products_length = products.length %}
+{% endif %}
+
+<div
+  class="slider-gallery products-slider products-length-{{ products_length }} transparentBackground--{{settings.slideshow_button_style}}"
+  data-products-per-slide="{{ visible_products }}" data-products-limit="{{ limit }}"
+  data-products-available="{{ products_length }}" data-carousel-slider="{{ carousel }}">
+  {% for product in products limit: loop_limit %}
+    {% for product_option in product.options_with_values %}
+      {% if product_option.name contains "Color" or product_option.name contains "color" %}
+        {% for value in product_option.values %}
+		      {% for i in (0..num_colors) %}
+          {% assign color_selected = color_value[i] | strip %}
+            {% if value == color_selected %}
+            {% assign first_color_val = value %}
+
+              {% for variant in product.variants %}
+                {% if variant.option1 == first_color_val %}
+                
+                    {% if variant.available %}
+                      {% include 'product-thumbnail-size' with product-loop-new %}
+                      {% break %}
+                    {% endif %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      {% endif%}
+    {% endfor %}
+  {% endfor %}
+</div>
