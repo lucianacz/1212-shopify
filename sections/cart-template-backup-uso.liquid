@@ -1,4 +1,4 @@
-{% comment %}
+<script class="cartFlagX"></script>{% comment %}
 ** Cart page - default view **
 - Template section
 {% endcomment %}
@@ -59,7 +59,7 @@
 
             <div class="seven columns omega cart_content_info{% if item.url contains 'donation' %} donation-added{% endif %}">
               <h3>
-                <a href="{{ item.url }}">{{ item.product.title }}</a>
+                <a href="{{ item.url }}">{{ item.product.title }}<span class="tdf-cart-item-t"></span></a>
               </h3>
 
               {% unless item.product.has_only_default_variant or item.variant.title contains "Title" or item.url contains 'donation' %}
@@ -139,7 +139,7 @@
             {% include 'gift-wrapping' %}
             <p class="cart_subtotal js-cart_subtotal">
               <span class="right">
-                <span class="money">{{ cart.total_price | money }}</span>
+                <span class="money"><span style="display:none" class="tdf-cart-total-flag"></span>{{ cart.total_price | money }}</span>
               </span>
               <span>{{ 'cart.general.subtotal' | t }}</span>
             </p>

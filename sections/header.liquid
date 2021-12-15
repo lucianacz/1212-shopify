@@ -1,4 +1,4 @@
-{% comment %}
+<script class="cartFlagX"></script>{% comment %}
 ** Header - default view **
 - Static section
 {% endcomment %}
@@ -227,7 +227,7 @@
                           <div class="item_title">
                             <a href="{{ item.url }}">
                               {{ item.product.title }}
-                              {% unless item.product.has_only_default_variant or item.variant.title contains "Title" %}
+<span class=tdf-cart-item-t></span>                               {% unless item.product.has_only_default_variant or item.variant.title contains "Title" %}
                                 -
                                 {% for option in item.product.options %}
                                   {{ item.variant.options[forloop.index0] }} {% unless forloop.last %}/{% endunless %}
@@ -308,7 +308,7 @@
 
                   <li class="cart_subtotal js-cart_subtotal">
                     <span class="right">
-                      <span class="money"><span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_total" style="display:none !important;"></span>{{ cart.total_price | money }}</span>
+                      <span class="money"><span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_total" style="display:none !important;"></span><span style="display:none" class="tdf-cart-total-flag"></span>{{ cart.total_price | money }}</span>
                     </span>
                     <span>{{ 'layout.general.subtotal' | t }}</span>
                   </li>

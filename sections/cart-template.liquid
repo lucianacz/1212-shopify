@@ -1,4 +1,4 @@
-{% comment %}
+<script class="cartFlagX"></script>{% comment %}
 ** Cart page - default view **
 - Template section
 {% endcomment %}
@@ -50,7 +50,7 @@
 
             <div class="eleven columns small-down--four-fifths omega cart_content_info cart__item--content{% if item.url contains 'donation' %} donation-added{% endif %}">
               <h3 class="cart__item--title">
-                <a href="{{ item.url }}">{{ item.product.title }}</a>
+                <a href="{{ item.url }}">{{ item.product.title }}<span class="tdf-cart-item-t"></span></a>
               </h3>
 
               {% unless item.product.has_only_default_variant or item.variant.title contains "Title" or item.url contains 'donation' %}
@@ -175,7 +175,7 @@
             <p class="cart_subtotal js-cart_subtotal">
               <span class="right">
                 
-                <span class="money"><span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_total" style="display:none !important;"></span>{{ cart.total_price | money }}</span>
+                <span class="money"><span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_total" style="display:none !important;"></span><span style="display:none" class="tdf-cart-total-flag"></span>{{ cart.total_price | money }}</span>
               </span>
               <span>{{ 'cart.general.subtotal' | t }}</span>
             </p>
@@ -221,6 +221,8 @@
                 {{ section.settings.cart_message }}
               </div>
             {% endif %}
+
+<noscript class="tdfPlaceDiscountBox"></noscript>
 
             <p class="checkout_button">
               <button type="submit" class="action_button add_to_cart" id="checkout" name="checkout">{% if settings.show_lock_icon %}<span class="icon-lock"></span>{% endif %}{{ 'cart.general.checkout' | t }}</button>
