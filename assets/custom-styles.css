@@ -22,4 +22,56 @@ a.parent-link--true[href="/collections/light-pink-hearts"]:after{
   left: 30px;
 }
 
+/* 
 
+.bold_option_value .bold_option_swatch_title{
+  background: white;
+  height: 150px !important;
+  width: 140px;
+  width: 250px;
+  height: 250px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0px;
+}
+
+.bold_option_value .bold_option_swatch_title .bold_option_value_title{
+  font-size: 0px;
+}
+
+.bold_option_value:hover .bold_option_swatch_title{
+  opacity: 1;
+} */
+
+
+@media (max-width: 767px) {
+  .bold_option.bold_option_displaytext {
+    display: flex;
+    flex-direction: column;
+  }
+  .image-bold{
+    margin-bottom: 20px;
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+  .bold_option.bold_option_displaytext {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .image-bold{
+    margin-right: 10px;
+    width: 150px;
+  }
+}
+
+.bold_option.bold_option_displaytext.bold_option_hidden {
+  display: none;
+}

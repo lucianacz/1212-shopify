@@ -511,6 +511,7 @@ selectCallback = function(variant, selector) {
     });
   }
   else{
+      $('[data-gallery-color]').hide();
       $('[data-gallery-color]').appendTo(".js-product-gallery.variant .flickity-slider");
       $('[data-gallery-color]').show();
       $(".js-product-gallery.variant").flickity('destroy');
@@ -528,23 +529,11 @@ selectCallback = function(variant, selector) {
         "asNavFor": ".product_gallery_nav"
       });
 
+      $('.product-images').hide();
       $('[data-thumbnail-color]').appendTo(".product_gallery_nav.variant");
       $('[data-thumbnail-color]').show();
       $(".product-template .product_gallery_nav.variant").flickity('destroy');
-      $(".product-template .product_gallery_nav.variant").removeClass('no-slide');
-      $(".product-template .product_gallery_nav.variant").flickity({
-        "asNavFor": ".js-product-gallery.variant",
-        "wrapAround": true,
-        "arrowShape": arrowSize,
-        "cellAlign": "center",
-        "draggable": true,
-        "contain": true,
-        "imagesLoaded": 1,
-        "pageDots": false,
-        "prevNextButtons": true,
-        "dragThreshold": 10,
-        "initialIndex": '.is-initial-select'
-      });
+
 }
 
 
