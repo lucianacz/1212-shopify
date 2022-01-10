@@ -314,7 +314,7 @@
 <script>
 $(document).ready(function () {
     var checkExistTime = setInterval(function () {
-      if ($('.bold_option_title').length > 0){
+      if ($(".bold_option_title:contains('Hidden')").length > 0){
         setTimeout(function () {
           $(".bold_option_title:contains('Hidden')" ).hide();
           $(".bold_option_value_title:contains('Hidden')" ).hide();

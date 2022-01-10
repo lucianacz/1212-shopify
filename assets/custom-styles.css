@@ -2,9 +2,9 @@
   color: red !important;
 }
 
-a.top_link[href="/collections/light-pink-hearts"],
-a.parent-link--true[href="/collections/light-pink-hearts"] {
-  color: #ff7cad;
+a.top_link[href="/collections/valentines-day"],
+a.parent-link--true[href="/collections/valentines-day"] {
+  color: red;
 }
 
 a.top_link[href="/collections/light-pink-hearts"]::after,
