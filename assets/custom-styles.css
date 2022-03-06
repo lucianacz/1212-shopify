@@ -75,3 +75,26 @@ a.parent-link--true[href="/collections/light-pink-hearts"]:after{
 .bold_option.bold_option_displaytext.bold_option_hidden {
   display: none;
 }
+
+
+.label-product {
+  font-weight: bold;
+}
+
+.birthday a,
+li[data-mobile-dropdown-rel="birthday"] a{
+  background-image: linear-gradient(100deg, rgba(5,252,152,1) 0%, rgba(16,153,255,1) 33%, rgba(255,109,198,1) 66%, rgba(255,255,100,1) 100%);
+  background-image: -webkit-gradient(100deg, rgba(5,252,152,1) 0%, rgba(16,153,255,1) 33%, rgba(255,109,198,1) 66%, rgba(255,255,100,1) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+.birthday a:hover,
+.birthday a:focus,
+li[data-mobile-dropdown-rel="birthday"] a:hover,
+li[data-mobile-dropdown-rel="birthday"] a:focus{
+  background-image: linear-gradient(278deg, rgba(5,252,152,1) 0%, rgba(16,153,255,1) 33%, rgba(255,109,198,1) 66%, rgba(255,255,100,1) 100%);
+  background-image: -webkit-gradient(278deg, rgba(5,252,152,1) 0%, rgba(16,153,255,1) 33%, rgba(255,109,198,1) 66%, rgba(255,255,100,1) 100%);
+}
