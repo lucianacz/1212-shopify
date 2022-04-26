@@ -98,3 +98,10 @@ li[data-mobile-dropdown-rel="birthday"] a:focus{
   background-image: linear-gradient(278deg, rgba(5,252,152,1) 0%, rgba(16,153,255,1) 33%, rgba(255,109,198,1) 66%, rgba(255,255,100,1) 100%);
   background-image: -webkit-gradient(278deg, rgba(5,252,152,1) 0%, rgba(16,153,255,1) 33%, rgba(255,109,198,1) 66%, rgba(255,255,100,1) 100%);
 }
+
+
+.vertical-menu .just-in a,
+#mobile_menu li[data-mobile-dropdown-rel="just-in"] a{
+  color:  #2ecc7e;
+  font-weight: bold;
+}

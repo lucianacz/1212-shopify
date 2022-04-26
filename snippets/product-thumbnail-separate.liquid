@@ -97,75 +97,9 @@
     <a class="product-info__caption {% if settings.thumbnail_hover_enabled %}hidden{% endif %}" href="{{ product.url | within: collection | append: '?variant=' | append: variant.id }}" itemprop="url">
       {%comment%}{% include "product-info" %}{%endcomment%}
 
+ 
       {%- comment -%}Label{%- endcomment -%}
-      {% assign print_color_downcase = variant.metafields.global.print_color | downcase | strip %}
-
-      {% assign lowstock = false %}
-      {% assign label1 = false %}
-
-      {% assign sum = 0 %}
-      {% for variant in product.variants %}
-      {% assign color_variant = variant.title | split: '/' | first | downcase | strip %}
-        {% if color_variant  == print_color_downcase %}
-        {% assign sum = sum | plus: variant.inventory_quantity %}
-        {% endif %}
-      {% endfor %}
-      {% if sum > 0 and sum <= 10 %}
-      {% assign lowstock = true %}
-      <div class="label-product label-low-stock">
-        <i class="fa fa-rocket"></i>
-        LOW STOCK
-      </div>
-      {% endif %}
-
-      {% unless lowstock %}        
-      {% if product.metafields.product.colors_label_1 != blank %}
-      {% assign label_1_colors = product.metafields.product.colors_label_1 | split: ',' %}
-        {% for label_1_color in label_1_colors %}
-          {% assign label_1_color_downcase = label_1_color | downcase | strip %}
-          {% if label_1_color_downcase == print_color_downcase %}
-          {% assign label1 = true %}
-          <div class="label-product label-1" style="color: {{ product.metafields.product.color_label_1 }};">
-            {% if product.metafields.product.icon_label_1 != blank %}
-              <i class="fa fa-{{  product.metafields.product.icon_label_1 | downcase }}"></i>
-            {% else %}
-              <i class="fa fa-bullhorn"></i>
-            {% endif %}
-              {% if product.metafields.product.word_label_1 != blank %}
-                {{ product.metafields.product.word_label_1 | upcase }}
-              {% else %}
-                JUST IN
-              {% endif %}
-          </div>
-          {% endif %}
-      {% endfor %}
-    {% endif %}
-    {% endunless %}
-
-    
-    {% unless label1 %}      
-    {% if product.metafields.product.colors_label_2 != blank %}
-      {% assign label_2_colors = product.metafields.product.colors_label_2 | split: ',' %}
-      {% for label_2_color in label_2_colors %}
-          {% assign label_2_color_downcase = label_2_color | downcase | strip %}
-
-          {% if label_2_color_downcase == print_color_downcase %}
-          <div class="label-product label-2" style="color: {{ product.metafields.product.color_label_2 }};">
-            {% if product.metafields.product.icon_label_2 != blank %}
-              <i class="fa fa-{{  product.metafields.product.icon_label_2 | downcase }}"></i>
-            {% else %}
-              <i class="fa fa-heart"></i>
-            {% endif %}
-              {% if product.metafields.product.word_label_2 != blank %}
-                {{ product.metafields.product.word_label_2 | upcase }}
-              {% else %}
-                CUSTOMIZABLE
-              {% endif %}
-            </div>
-          {% endif %}
-      {% endfor %}
-    {% endif %}
-    {% endunless %}
+      {% include 'include-labels' %}
     
       <div class="product-details">
         <span class="title" itemprop="name">{% if product.metafields.global.title != blank %}{{ product.metafields.global.title }}{% else %}{{ product.title }}{% endif %}{% if variant.metafields.global.print_color != blank %}

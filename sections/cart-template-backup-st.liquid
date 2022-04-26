@@ -84,7 +84,7 @@
 
               <p class="modal_price">
                 {% if item.price > 0 %}
-                  <span class="money"><div class="pn-price-item" data-id="{{ item.key }}"><span class=tdf-cart-item-p-p>{{ item.price | money }}</span></div></span>
+                  <span class="money"><div class="pn-price-item" data-id="{{ item.key }}"><span class=tdf-cart-item-p-p><div class="pn-price-item" data-id="{{ item.key }}">{{ item.price | money }}</div></span></div></span>
                 {% else %}
                   {{ settings.free_price_text }}
                 {% endif %}

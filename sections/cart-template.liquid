@@ -131,7 +131,7 @@
                 {% endif %}
                 <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_total" style="display:none !important;"></span>
                 <span class="money{% if item.line_level_discount_allocations.size > 0 %} was_price{% endif %}">
-                  <div class="pn-total-line-item" style="display: none" data-id="{{ item.key }}">{{ item.original_line_price | money }}</div>
+                  <div class="pn-total-line-item" style="display: none" data-id="{{ item.key }}"><div class="pn-total-line-item" data-id="{{ item.key }}">{{ item.original_line_price | money }}</div></div>
                 </span>
               </p>
 

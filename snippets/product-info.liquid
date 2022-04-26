@@ -1,4 +1,7 @@
 <div class="product-details">
+  {%- comment -%}Label{%- endcomment -%}
+  {% include 'include-labels' %}
+  
   <span class="title" itemprop="name">{{ product.title }}</span>
   {% if settings.display_vendor %}
     <span class="brand">{{ product.vendor }}</span>
